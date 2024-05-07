@@ -1,0 +1,10 @@
+Schema - Define the structure
+using Schema we make model and with the use of these
+model we use CRUD operations.
+in mock data structure is :-
+id
+first_name
+last_name
+email
+gender
+job_title

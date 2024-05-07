@@ -2,7 +2,42 @@ const express = require("express");
 const fs = require("fs");
 const app = express();
 const PORT = 8000;
+const mongoose = require("mongoose");
 const Users = require("./MOCK_DATA.json");
+
+
+
+//Connection
+mongoose.connect("mongodb://127.0.0.1:27017/harleen-database")
+.then(()=>console.log("MongoDB Connected"))
+.catch(err=> console.log("Mongo Error",err));
+
+//Schema
+const userSchema = new mongoose.Schema({
+firstName:{
+    type:String,
+    required:true,
+},
+lastName:{
+    type:String,
+},
+email:{
+    type:String,
+    required: true,
+    unique:true,
+},
+jobTitle:{
+    type:String,
+},
+gender:{
+    type:String,
+},
+})
+
+//Model
+const User=mongoose.model('user',userSchema);
+
+
 
 // Middleware to parse JSON request body
 // app.use(express.json());
