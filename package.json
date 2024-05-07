@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mongoose-express": "^0.0.1"
+  }
+}
