@@ -47,7 +47,20 @@ const userSchema = new mongoose.Schema({
 
 // Define User Model
 const User = mongoose.model('User', userSchema);
+//ROUTES
+//1..
+app.get("/users",async(req,res)=>{
+    const allDbUsers = await User.find({});
+    const html = `
+    <ul>
+        ${allDbUsers.map((user) => `<li>${user.first_name} - ${user.email} </li>`).join('')}
+    </ul>`;
+    // Send HTML response
+    res.send(html);
+});
 
+
+//2..
 app.post('/api/Users', async(req, res) => {
     const body = req.body;
     
