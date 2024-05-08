@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
 // Define User Model
 const User = mongoose.model('User', userSchema);
 //ROUTES
-//1..
+//1..SHOW DATA OF DB
 app.get("/users",async(req,res)=>{
     const allDbUsers = await User.find({});
     const html = `
@@ -60,7 +60,7 @@ app.get("/users",async(req,res)=>{
 });
 
 
-//2..
+//2.. INSERTION INTO DB
 app.post('/api/Users', async(req, res) => {
     const body = req.body;
     
@@ -72,5 +72,20 @@ first_name: body.first_Name, last_name: body.last_Name,email: body.Email_id, gen
 console.log("result = ",result);
 return res.status(200).json({msg:"success"});
 });
+
+//3.. CUSTOM USER ID
+app.get('/api/Users/:id', async(req, res) => {
+    const user = await User.findById(req.params.id);
+    
+    if (!user) {
+        // If user with given ID is not found, return 404
+        return res.status(404).json({ error: 'User not found' });
+    }
+    // Return JSON data for the found user
+    return res.json(user);
+});
+
+
+
 
 app.listen(PORT, () => console.log(`Server started at PORT:${PORT}`)); 
