@@ -85,13 +85,17 @@ app.get('/api/Users/:id', async(req, res) => {
     return res.json(user);
 });
 
-//4...
+//4...UPDATIONS TO DB
 app.patch('/api/Users/:id', async(req,res)=>{
 await User.findByIdAndUpdate(req.params.id,{last_name:"Changed"});
 return res.json({status:"Success"});
 })
 
-
+//5..DELETION TO DB
+app.delete('/api/Users/:id', async(req,res)=>{
+    await User.findByIdAndDelete(req.params.id);
+    return res.json({status:"Success"});
+    })
 
 
 app.listen(PORT, () => console.log(`Server started at PORT:${PORT}`)); 
