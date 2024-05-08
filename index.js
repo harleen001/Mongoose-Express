@@ -39,8 +39,11 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   gender: { type: String },
   job: { type: String },
+},
+{timestamps:true} //will give created at and updated at time 
 
-});
+
+);
 
 // Define User Model
 const User = mongoose.model('User', userSchema);
@@ -49,6 +52,7 @@ app.post('/api/Users', async(req, res) => {
     const body = req.body;
     
    //insertion into database
+   // to check use command db.users.find()
  const result =  await User.create({
 first_name: body.first_Name, last_name: body.last_Name,email: body.Email_id, gender:body.Gender, job:body.jobTitle,
 });
