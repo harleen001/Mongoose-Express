@@ -85,6 +85,12 @@ app.get('/api/Users/:id', async(req, res) => {
     return res.json(user);
 });
 
+//4...
+app.patch('/api/Users/:id', async(req,res)=>{
+await User.findByIdAndUpdate(req.params.id,{last_name:"Changed"});
+return res.json({status:"Success"});
+})
+
 
 
 
