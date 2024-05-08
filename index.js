@@ -1,43 +1,9 @@
 const express = require("express");
-const fs = require("fs");
+const mongoose = require("mongoose");
+
+
 const app = express();
 const PORT = 8000;
-const mongoose = require("mongoose");
-const Users = require("./MOCK_DATA.json");
-
-
-
-//Connection
-mongoose.connect("mongodb://127.0.0.1:27017/harleen-database")
-.then(()=>console.log("MongoDB Connected"))
-.catch(err=> console.log("Mongo Error",err));
-
-//Schema
-const userSchema = new mongoose.Schema({
-firstName:{
-    type:String,
-    required:true,
-},
-lastName:{
-    type:String,
-},
-email:{
-    type:String,
-    required: true,
-    unique:true,
-},
-jobTitle:{
-    type:String,
-},
-gender:{
-    type:String,
-},
-})
-
-//Model
-const User=mongoose.model('user',userSchema);
-
-
 
 // Middleware to parse JSON request body
 // app.use(express.json());
@@ -60,64 +26,34 @@ app.use((req,res,next)=>{
     next();
 })
 
-// Routes
 
-// GET all users
-app.get('/api/Users', (req, res) => {
-    res.setHeader('myName',"Harleen Singh") //set header
-    //always add X  before header name so that client can understand that this is a custom header
-    // Return JSON data
-    return res.json(Users);
+// MongoDB Connection
+mongoose.connect("mongodb://127.0.0.1:27017/kartik-database")
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log("Mongo Error", err));
+
+// Define User Schema
+const userSchema = new mongoose.Schema({
+  first_name: { type: String, required: true },
+  last_name: { type: String },
+  email: { type: String, required: true, unique: true },
+  gender: { type: String },
+  job: { type: String },
+
 });
 
-// GET all users as HTML list
-app.get('/Users', (req, res) => {
-    // Generate HTML list of user names
-    const html = `
-    <ul>
-        ${Users.map((user) => `<li>${user.first_name}</li>`).join('')}
-    </ul>`;
-    // Send HTML response
-    res.send(html);
-});
+// Define User Model
+const User = mongoose.model('User', userSchema);
 
-// GET user by ID
-app.get('/api/Users/:id', (req, res) => {
-    const id = Number(req.params.id);
-    const user = Users.find((user) => user.id === id);
-    if (!user) {
-        // If user with given ID is not found, return 404
-        return res.status(404).json({ error: 'User not found' });
-    }
-    // Return JSON data for the found user
-    return res.json(user);
-});
-
-app.post('/api/Users', (req, res) => {
+app.post('/api/Users', async(req, res) => {
     const body = req.body;
-    Users.push({...body, id: Users.length + 1});
-    fs.writeFile("./MOCK_DATA.json", JSON.stringify(Users), (err, data) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({error: "Internal Server Error"});
-        }
-        return res.json({status: "pending"});
-    });
+    
+   //insertion into database
+ const result =  await User.create({
+first_name: body.first_Name, last_name: body.last_Name,email: body.Email_id, gender:body.Gender, job:body.jobTitle,
+});
+console.log("result = ",result);
+return res.status(200).json({msg:"success"});
 });
 
-app.patch('/api/Users/:id', (req, res) => {
-    //TO DO: Edit a user, you have to give id number as you want to edit
-        return res.json({status: "pending"});
-    });
-
-
-app.delete('/api/Users/:id', (req, res) => {
-    //TO DO: Delete a user, you have to give id number
-    return res.json({status: "pending"});
-    });
-//these three are same so you can also write them in one as declaring 
-//app.route("/api/Users/:id") only once and then .get((req,res) => {})
-//.delete((req,res) => {}).it is good practice as you have to change route
-//name only once in the code 
-
-app.listen(PORT, () => console.log(`Server started at PORT:${PORT}`));
+app.listen(PORT, () => console.log(`Server started at PORT:${PORT}`)); 
