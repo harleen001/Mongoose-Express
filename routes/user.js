@@ -1,18 +1,10 @@
 const express = require("express");
-
 const router=express.Router();
+const {handleGetallUsers}= require('../controllers/user')
 
 //ROUTES
 //1..SHOW DATA OF DB
-router.get("/",async(req,res)=>{
-    const allDbUsers = await User.find({});
-    const html = `
-    <ul>
-        ${allDbUsers.map((user) => `<li>${user.first_name} - ${user.email} </li>`).join('')}
-    </ul>`;
-    // Send HTML response
-    res.send(html);
-});
+router.get("/",handleGetallUsers);
 
 
 //2.. INSERTION INTO DB
